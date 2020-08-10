@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html>
+{% load static %}
+{#{% load media %}#}
+<head>
+    <!-- <script src="static/js/p5.js"></script> -->
+    <script src="{% static 'js/jquery-3.5.1.min.js' %}"></script>
+    <!-- <script src="https://apps.bdimg.com/libs/jquery/1.11.1/jquery.min.js"></script> -->
+    <script src="{% static 'js/jquery.sparkline.js' %}"></script>
+    <script type="text/javascript" charset="utf-8" src="{% static 'js/ueditor.config.js' %}"></script>
+    <script type="text/javascript" charset="utf-8" src="{% static 'js/editor_api.js' %}"></script>
+    <style type="text/css">
+        .nite-writer-pen{
+            background-color: lightgreen;
+            border-radius: 5px;
+            box-shadow: 0 0 10px lightgreen;
+            font-style: normal;
+        }
+        .custom-underline{
+            border-bottom: 1px solid #f00;
+            font-style: normal;
+        }
+        .lineheight{
+            background-color:blue;
+        }
+    </style>    
+</head>
+<body>
+<meta charset="utf-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+      type="text/css">
+<link rel="stylesheet" href="{% static 'css/theme.css' %}" type="text/css">
+{#    <h1 class="text-center align-items-center" style=""><b>CX Video Intelligent Analysis</b></h1>#}
+<div class="container mt-4" style="box-shadow: 0px 0px 4px  black;">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="row">
+                <div class="col-md-12">
+                    <h1 class="text-center align-items-center" style=""><b>CX Video Intelligent Analysis</b></h1>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-7 text-center px-4" style="height: 100%;">
+                    <div class="row">
+                        {#                                {% if filename %}#}
+                        <!-- 上传后 -->
+                        {#                                <video class="" width="1000" height="320px" mediatype="video" src=""#}
+                        {#                                       controls="controls">#}
+                        {#                                </video>#}
+                        {##}
+                        {#                                {% elif a %}#}
+                        <!-- 上传视频前显示视频上传按钮 -->
+                        <div class="col-md-12 align-items-center border p-2 border-dark mt-2" style="height: 400px;  hebackground-position: left top; background-size: 100%; background-repeat: repeat; background-image: linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1));">
+                            {% ifnotequal MEDIA_URL "/media/" %}
+                                //console.log({{SubPath}})
+                                <video preload="metadata" id = "myVideo" ontimeupdate="updateLine()" conrtols="true" src="{% static VideoPath %}" style="width: 100%; height: 85%; background-color: rgb(0, 0, 0);" controls="controls">
+                                    <track src="{% static SubPath %}" id = "subtitle" kind="subtitles" srclang="en" label="English" default />
+                                    Your browser does not support the video tag.
+                                </video>
+                            {%else%}
+                            <!-- 上传前 -->
+                                <form enctype="multipart/form-data" action="{% url 'analysis:uploads' %} " method="post">
+                                    {% csrf_token %}
+                                    <img class="iconforupload img-fluid d-block pi-draggable mx-auto rounded mt-2"
+                                            src="{% static 'images/download.png' %}"
+                                            height="10px" width="80px">
+                                    <br>
+                                        
+
+                                    <input class="center text-center" multiple="multiple"
+                                            name="cx_videoupload" type="file">
+                                    <input type="submit" value="Start upload video">
+
+                                    <br>
+                                    <br>
+                                    <br>
+                                    <br>
+
+                                    <a class="text-left d-flex align-items-end">Video - Waiting to Upload...</a>
+                                    <p class="text-left d-flex align-items-end">Video - Waiting to Upload...</p>
+
+                                    <br>
+                                    <br>
+                            {% endifnotequal %}
+                                    <p align="left">
+                                        Sparkline with dynamic data: </br>
+                                        <span class="dynamicsparkline">Loading..</span>
+                                    </p>
+
+                                    <div align="left">
+                                        <form id = "method" class="w-100 text-left"><strong>Step 1 Please Choose Auto-transciprt method:</strong>
+                                            <label><input name="Paymethod" type="radio" value="Free" checked="true">Free    </label>
+                                            <label><input name="Paymethod" type="radio" value="State_of_Art">State of Art</label></br>
+                                            <strong>Step 2 Please Choose Video Language:</strong>
+                                            <label><input name="languageChoose" type="radio" value="English" checked="true">English</label>
+                                            <label><input name="languageChoose" type="radio" value="Chinese">中文</label>
+                                        </form>
+                                        
+                                    </div>
+                  
+                                    <div class="row text-left p-0" style="vertical-align: center">
+                                        <a class="mt-1 ml-2"><strong>Step 3 Please Click to upload video:</strong></a>
+                                        <!-- <a class="btn btn-outline-dark pi-draggable" href="#videoForm" draggable="true" name="cx_videoupload">Click to up load video</a> -->
+                                    </div>
+                                    <br>
+                                    <div class="row">
+                                        <a class="ml-2 mt-1"><strong>Step 4 Click to show/hide setiment:</strong></a>
+                                        {#                            {% if %}#}
+            {#                            <a class="btn btn-outline-dark pi-draggable" draggable="true" href="#"#}
+            {#                               onclick="show_sentiment()">{% if %}Show#}
+            {#                                Sentiment{% else %}Hide Sentiment{% endif %}#}
+            {#                            </a>#}
+                                    </div>
+                                </form>
+                            
+                                <!-- 上传后 -->
+                                <!-- <div>
+                                {#    <video class=""  height="300px" mediatype="video" src="{% media '' %}" controls="controls"></video>#}
+                                </div> -->
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <p>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                        </div>
+                    </div>
+                    <div >
+                        
+                    </div>
+                </div>
+                <div class="col-md-5" style="height: 600px;">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="row">
+                                <div class="col-md-8 align-items-center">
+                                    <h4 class="align-items-center my-1">Transcripts</h4>
+                                </div>
+                                <div class="col-md-4 text-right my-1 fordownload">
+                                    <a class="btn btn-outline-dark pi-draggable border-0" draggable="true" download="字幕文件.vtt">
+                                       <i class="fa fa-cloud-download fa-fw fa-lg"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mr-1" style="">
+                        <button onClick= "enableNiteWriterPen()">荧光笔</button>
+                        <button onClick= "addUnderline()">添加下划线</button>
+                        <div class="col-md-12 pl-1 border" style=" padding:0; ">
+                            <p class="w-100 rounded" id = "transcriber" style="overflow: auto; overflow-x:hidden;height: 500px;">
+                                <!-- {#                                {% for subtext in subtexts %}#}
+                                <a href="#">((localtime))</a>dfadsfadsfasdfadf<br>
+                                <a href="#">afdsfadsfadsfadsfadsfadf1</a><br>
+                                <a href="#">afdsfadsfadsfadsfadsfadf1</a><br>
+                                <a href="#">afdsfadsfadsfadsfadsfadf1</a><br>
+                                <a href="#">afdsfadsfadsfadsfadsfadf1</a><br>
+                                <a href="#">afdsfadsfadsfadsfadsfadf1</a><br>
+                                <a href="#">afdsfadsfadsfadsfadsfadf1</a><br>
+                                <a href="#">afdsfadsfadsfadsfadsfadf1</a><br>
+                                {#                                {% endfor %}#} -->
+                            </p>
+                        </div>
+                    </div>
+                    <div class="row mr-1" style="">
+                        <form action="/add/" method="get">
+                            <button type="button" id='sum'>Mood Identify</button>
+                        </form>
+                        <form action="/recover/" method="get">
+                            <button type="button" id='recover'>Get Transcriber</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+        integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+        crossorigin="anonymous"></script>
+<script>
+    {#文件格式验证#}
+    var txt;
+    var temp = document.querySelector('track').src;
+    document.getElementsByClassName('btn btn-outline-dark pi-draggable border-0')[0].href = temp;
+    let languageChosen = $('#language').serialize();
+    //下划线    
+    addUnderline = () => {
+        //console.log('underline');
+        replaceSelectedStrByEle('custom-underline');
+    }
+    //荧光笔
+    enableNiteWriterPen = () => {
+        //console.log('pen');
+        replaceSelectedStrByEle('nite-writer-pen');
+    }
+    //交互逻辑实现
+    replaceSelectedStrByEle = (className) => {
+        var getRange = () => {
+            var me = window;
+            var range = new Range(me.document);
+
+            var sel = window.getSelection();
+            if (sel && sel.rangeCount) {
+                var firstRange = sel.getRangeAt(0);
+                var lastRange = sel.getRangeAt(sel.rangeCount - 1);
+                range.setStart(firstRange.startContainer, firstRange.startOffset)
+                range.setEnd(lastRange.endContainer, lastRange.endOffset);
+            }
+            return range
+        }
+        var range = getRange();
+        range.applyInlineStyle('i', {
+            class: className
+        });
+        range.select();
+    }
+
+    //显示字幕信息
+    $(document).ready(function(){
+      $("#sum").click(function(){     
+	
+        test = $.get("/cx_video/add/",{'location':temp,'language':languageChosen}, function(ret){
+            var srtText = '';
+            var color = '';
+            txt = ret["list_of_jsonstuffs"];
+            scores = ret["score"];
+            for (i = 0; i < txt.length; i++){
+                score = scores[i];
+                var val = 255*score;
+                if (score > 0){
+                    color = "rgb("+ val.toString() +",0,0)";
+                }else{
+                    color = "rgb(0,0,"+ Math.abs(val).toString() +")";                    
+                }
+                srtText += "<p style=\"color:" + color + ";\">"+txt[i]+"</p>";
+                          
+                //$('#transcriber').html(str);
+            }
+            $('#transcriber').html(srtText);
+
+            $(function() {
+                /** This code runs when everything has been loaded on the page */
+                /* Inline sparklines take their values from the contents of the tag */
+                $('.inlinesparkline').sparkline(); 
+                //console.log(scores);
+
+                /* Sparklines can also take their values from the first argument 
+                passed to the sparkline() function */
+                var myvalues = scores;
+                $('.dynamicsparkline').sparkline(myvalues,{
+                    type:'line',
+                    width: 'auto'
+                });
+
+            });
+        })
+      });
+    });
+
+    $(document).ready(function(){
+      $("#recover").click(function(){     
+	
+        test = $.get("/cx_video/recover/",{'location':temp}, function(ret){
+            var srtText = '';
+            txt = ret["result"];
+            for (i = 0; i < txt.length; i++){
+                srtText += "<p>"+txt[i]+"</p>";
+                          
+                //$('#transcriber').html(str);
+            }
+            $('#transcriber').html(srtText);
+
+
+            //result = ret['result']
+            //$('#transcriber').html(result);
+        })
+      });
+    });
+
+    //监听video 的timeupdate 事件，实现文字与音频的同步
+    var lineNo = 0;
+    function updateLine() {
+        //var medisArray = test;
+        medisArray = test['responseJSON']['medis'];
+        var video = document.getElementById("myVideo");
+        //console.log(medisArray['t'].length);
+        if (lineNo == medisArray['t'].length - 1 && video.currentTime.toFixed(3) >= parseFloat(medisArray['t'][lineNo])) {
+            //console.log(lineNo);
+            lineHeight(lineNo);
+        }
+        if (parseFloat(medisArray['t'][lineNo]) <= video.currentTime.toFixed(3) &&
+            video.currentTime.toFixed(3) <= parseFloat(medisArray['t'][lineNo + 1])) {
+                lineHeight(lineNo);
+                lineNo++;
+        }
+    };
+
+    //实现文字高亮滚动
+    var fraction = 0.5;
+    var topNum = 0;
+    function lineHeight(lineno){
+        var ul = $("#transcriber");
+        var $ul = document.getElementById('transcriber');
+        // 令正在唱的那一行高亮显示
+        if (lineno > 0) {
+            $(ul.find("p").get(topNum + lineno)).removeClass("lineheight");
+        }
+        var nowline = ul.find("p").get(topNum + lineno + 1);
+        $(nowline).addClass("lineheight");
+        console.log(nowline);
+
+        // 实现文字滚动
+        var _scrollTop;
+        $ul.scrollTop = 0;
+        if ($ul.clientHeight * fraction > nowline.offsetTop) {
+            _scrollTop = 0;
+        } else if (nowline.offsetTop > ($ul.scrollHeight - $ul.clientHeight * (1 - fraction))) {
+            _scrollTop = $ul.scrollHeight - $ul.clientHeight;
+        } else {
+            _scrollTop = nowline.offsetTop - $ul.clientHeight * fraction;
+        }
+
+        //以下声明歌词高亮行固定的基准线位置成为 “A”
+        if ((nowline.offsetTop - $ul.scrollTop) >= $ul.clientHeight * fraction) {
+            //如果高亮显示的歌词在A下面，那就将滚动条向下滚动，滚动距离为 当前高亮行距离顶部的距离-滚动条已经卷起的高度-A到可视窗口的距离
+            $ul.scrollTop += Math.ceil(nowline.offsetTop - $ul.scrollTop - $ul.clientHeight * fraction);
+
+        } else if ((nowline.offsetTop - $ul.scrollTop) < $ul.clientHeight * fraction && _scrollTop != 0) {
+            //如果高亮显示的歌词在A上面，那就将滚动条向上滚动，滚动距离为 A到可视窗口的距离-当前高亮行距离顶部的距离-滚动条已经卷起的高度
+            $ul.scrollTop -= Math.ceil($ul.clientHeight * fraction - (nowline.offsetTop - $ul.scrollTop));
+
+        } else if (_scrollTop == 0) {
+            $ul.scrollTop = 0;
+        } else {
+            $ul.scrollTop += $(ul.find('p').get(0)).height();
+        }
+    }
+
+
+    $('#transcriber').dblclick(function(e){
+        //console.log("双击");
+        var video = document.getElementById("myVideo");
+        textVal = $(e.target).text();
+        textVal = textVal.split(" ")[0];
+        textVal = textVal.substring(1);
+        textVal = textVal.split(":");
+        hour = parseInt(textVal[0].slice(-2,-1));
+        minute = parseInt(textVal[1]);
+        second = parseFloat(textVal[2]);
+        time = hour * 3600 + minute * 60 + second;
+        
+        //video.addEventListener("seeked", function() { document.getElementsByTagName("video")[0].play(); }, true);
+        console.log(textVal);
+        console.log(time);
+        video.currentTime = time;
+        //video.play();
+    });
+
+</script>
+</body>
+
+</html>

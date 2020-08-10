@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Translate Test</title>
+  <style>
+    body {
+      padding: 0;
+      margin: 0;
+    }
+  </style>
+  <script src="javascript/p5.js"></script>
+  <script src="javascript/sketch.js"></script>
+</head>
+
+<body>
+
+        <style>
+            * {
+                box-sizing: border-box;
+            }
+
+            body {
+                margin: 0;
+                font-family: sans-serif;
+            }
+
+            video {
+                z-index: 1;
+                display: block;
+                margin: 0 ;
+                background-color: #ccc;
+                /* maximize video player size within viewport while maintaining 16:9 format */
+                width: 100%;
+                height: 100%;
+                max-width: 177.78vh;
+                max-height: 100vh;
+                object-fit: fill;
+            }
+
+            @keyframes fadeOut {
+                0% {
+                    opacity: 1;
+                }
+                95% {
+                    opacity: 1;
+                }
+                100% {
+                    opacity: 0;
+                }
+            }
+
+            /*.fadeout {
+                animation: fadeOut 1s linear;
+            }*/
+
+            /* input,
+            ul,
+            a {
+                position: absolute;
+                z-index: 2;
+                opacity: 0;
+                transition: opacity 0.15s ease-out;
+                
+            } */
+
+            /* input:hover, */
+            ul:hover,
+            a:hover {
+                opacity: 1;                
+            }
+
+            /* input[type=file] {
+                display: none;
+            } */
+
+            .left {
+                float: left;
+                width: 70vw;
+                height: 40vw;
+                
+            }
+            .right {
+                background-color: white;
+                margin-left: 75vw;
+                height: 40vw;
+            }
+            div{
+              overflow: auto;
+            }
+
+
+            /* a {
+                display: block;
+                width: 70vw;
+                background-color: rgba(0, 0, 0, 0.7);
+                text-align: center;
+                text-decoration: none;
+                text-transform: uppercase;
+                color: white;
+                left: 0;
+                top: 0;
+                padding: 2em;
+                font-size: 1.5em;
+            } */
+
+            input[type=text] {
+                bottom: 1.5em;
+                left: 1em;
+                font-size: 1.5em;
+                width: 4em;
+                text-align: center;
+                border: 1em solid rgba(0, 0, 0, 0.7);
+            }
+
+            ul {
+                margin: 0;
+                padding: 0 0 0 1em;
+                top: 0;
+                right: 0;
+                color: white;
+                background-color: rgba(0, 0, 0, 0.7);
+                list-style: none;
+                max-height:500px;
+                max-width:500px;
+                overflow:scroll;
+            }
+
+            li {
+                margin: 0.5em;
+                cursor: pointer;
+            }
+
+            li.played {
+                text-decoration: line-through;
+                list-style: square;
+                font-weight:bold;
+            }
+        </style>
+        <label class="nm">
+        
+        </label>
+        
+        <div id = "container">
+            <div id = "videoPlayer" class = "left">
+                <video controls autoplay>
+                    <track src="Coronavirus Ravages the Food Supply Chain.vtt" kind="subtitles" srclang="en" label="English" default />
+                </video>              
+            </div>
+
+            <div id = "transcriber" name = "transcriber" class = "right">
+                
+            </div>
+
+            <!-- <div id = "upload" name = "upload">
+                <form name="myform" action="lenovo_example.jsp" method="post" enctype="multipart/form-data">
+                    <input type="file" name = 'myfile'>
+                    <a class='fadeout' href="#">Open Files</a>
+                    <input type="submit" name="submit" value="Commit">
+                    <input class='fadeout' type="text" placeholder="playback speed" value="1">
+                </form>                
+            </div> -->
+            
+
+        </div>
+        <ul></ul>
+
+        <script>
+            // get DOM elements
+            const video = document.querySelector('video');
+            const filesInput = document.querySelector('input[type=file]');
+            const speedInput = document.querySelector('input[type=text]');
+            const filesButton = document.querySelector('a');
+            const playlist = document.querySelector('ul');
+            var txt;
+            var t = 0;
+            // redirect filesButton click to hidden filesInput
+            filesButton.addEventListener('click', e  => {
+                filesInput.click();
+                e.preventDefault();
+                return false;
+            });
+            function nextVideo() {
+                t++;
+                video.src = playlist.childNodes[t].objUrl;
+                playlist.childNodes[t].classList.add('played');
+                video.playbackRate = Number(speedInput.value);
+                video.addEventListener("ended", nextVideo, false);
+
+            }
+            function previousVideo() {
+                t--;
+                video.src = playlist.childNodes[t].objUrl;
+                playlist.childNodes[t].classList.add('played');
+                video.playbackRate = Number(speedInput.value);
+                video.addEventListener("ended", nextVideo, false);
+
+            }
+
+
+            filesInput.addEventListener('change', function (e) {
+                // delete all current list items in playlist
+                playlist.innerHTML = '';
+                t = 0;
+                // go through all selected files
+                for (const file of Array.from(this.files)) {
+                    // create list item and object url for the video file
+                    const listItem = document.createElement('li');
+                    listItem.objUrl = URL.createObjectURL(file);
+                    listItem.textContent = file.name;
+                    // give list item a click event listener for the corresponding video
+                    listItem.addEventListener('click', function (e) {
+                        //this.classList.add('played');
+                        this.classList.add('played');
+                        video.src = this.objUrl;
+                        video.playbackRate = Number(speedInput.value);
+                        const indexds = Array.from(this.parentElement.children).indexOf(this)
+                        t = indexds;
+                        // playlist.childNodes[t].classList.add('played');
+                        // video.src = playlist.childNodes[t].objUrl;
+                        // video.playbackRate = Number(speedInput.value);
+                        video.addEventListener("ended", nextVideo, false);
+                    });
+                    // append li to the list
+                    playlist.appendChild(listItem);
+                };
+                video.src = playlist.childNodes[0].objUrl;
+                playlist.childNodes[t].classList.add('played');
+                video.playbackRate = Number(speedInput.value);
+                video.addEventListener("ended", nextVideo, false);
+                                
+                // show the playlist for a moment
+                playlist.classList.add('fadeout');
+            }, false /* don't capture */);
+            // remove playlist fadeout after the animation ends, so it can be retriggered
+            playlist.addEventListener('animationend', e => {
+                playlist.classList.remove('fadeout');
+            });
+            // handle changes to speed input
+            speedInput.addEventListener('change', e => {
+                video.playbackRate = Number(speedInput.value);
+                // write actual playback rate value back to input
+                speedInput.value = Number(video.playbackRate);
+            });
+            // add keyboard shortcuts for pause (space) and 5 sec jump (left/right arrow)
+            document.addEventListener('keydown', e => {
+                //console.log(e.keyCode);
+                switch (e.keyCode) {
+                    case 32: // space
+                        video.paused ? video.play() : video.pause();
+                        break;
+                    case 37: // left arrow
+                        video.currentTime += -5;
+                        break;
+                    case 39: // right arrow
+                        video.currentTime += 5;
+                        break;
+                    case 78: // n
+                        nextVideo();
+                        break;
+                    case 80: // p
+                        previousVideo();
+                        break;
+                    
+                }
+            });
+
+            
+
+            filesInput.addEventListener('change', function setup() {
+              // put setup code here
+              //filesInput.onchange(loadfile);
+              //alert("World");
+              var result=document.getElementById("transcriber");
+              text = join(txt,'\n')
+              result.innerText = text;
+
+              //createP(join(txt,"<br/>"));
+            })
+
+            function readData(){
+                var file = document.getElementById("file").files[0];
+                //var file = this.files[0];
+                var reader = new FileReader();
+                console.log(file);
+                //将文件以文本形式读入页面
+                reader.readAsText(file,'UTF-8');
+                reader.οnlοad=function(f){
+                    var result=document.getElementById("transcriber");
+                    //显示文件
+                    const lines = reader.result.split('\n');
+                    //console.log(lines);
+                    for (i = 0; i < lines.length; i++) {
+                        result.innerText+=lines[i];
+                }
+            }
+            }
+
+        </script>
+
+    </body>
+
+</html>

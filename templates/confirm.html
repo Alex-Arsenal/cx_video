@@ -1,0 +1,32 @@
+{% load static %}
+
+<!DOCTYPE html>
+
+<html lang="en">
+    <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <title>Login to your account</title>
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" type="text/css">
+      <link href="{% static 'css/login.css' %}" rel="stylesheet"/>
+    </head>
+
+<body style="background-image: url({% static 'img/bg77.jpg' %});	background-position: top left;	background-size: 100%; background-attachment: fixed ;  background-repeat:no-repeat；">
+    <div class="container d-flex justify-content-center">
+        <div>
+            <br>
+            <br>
+            <br>
+            <h1 class="text-center font-weight-bold" >{{ message }}</h1>
+        </div>
+
+    </div>
+
+
+
+    <script>
+        window.setTimeout("window.location='{% url 'FireXu_user:login'%}'",2000);
+    </script>
+
+</body>
+</html>

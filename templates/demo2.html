@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=GB18030">
+    <title>File upload</title>
+    <script src='javascript/vue.js' type="text/javascript"></script>
+
+</head>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+      type="text/css">
+<body>
+<div>
+    <div class="col-md-12">
+        <h1 class="text-center align-items-center" style=""><b>CX Video Intelligent Analysis</b></h1>
+    </div>
+
+
+    <div id="select">
+        <form name="myform" v-bind:action="'https://trends.lenovoresearch.cn/upload/index.jsp?id='+picked" method="post"
+              enctype="multipart/form-data">
+            <!--<form name="myform" action="demo2.jsp" method="post" enctype="multipart/form-data">-->
+            <input type="file" name="myfile">
+            <br>
+
+            <div style="margin-top: 20px;">
+                <input type="radio" id="Google" value="Google" v-model="picked"/>
+                <label for="Google">Google</label>
+                <input type="radio" id="Baidu" value="Baidu" v-model="picked"/>
+                <label for="Baidu">Baidu</label>
+                <input type="radio" id="Xunfei" value="Xunfei" v-model="picked"/>
+                <label for="Xunfei">Xunfei</label>
+                <br/>
+                <!--<span>Picked: {{picked}}</span>-->
+            </div>
+
+            <div style="margin-top: 20px;">
+                <input type="submit" name="submit" value="Commit">
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+        integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+
+<script>
+    var vm = new Vue({
+        el: "#select",
+        data: {
+            picked: "Google"
+        }
+    })
+
+
+</script>
+</html>

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+      <meta charset="UTF-8">
+      <title>测试文件上传</title>
+</head>
+<body>
+    <form id = "fileUpload" enctype="multipart/form-data" action="{% url 'analysis:uploads' %} " method="post">
+        {% csrf_token %}
+        <img class="iconforupload img-fluid d-block pi-draggable mx-auto rounded mt-2"
+                src="{% static 'images/box+document+outline+share+top+upload+icon-1320195323221671611.png' %}"
+                height="10px" width="80px">
+        <br>
+        <input class="center text-center" multiple="multiple"
+                name="cx_videoupload" type="file">
+        <input type="submit" value="Start upload video">
+    </form>
+
+    
+    <form id = "Paymethod" class="w-100 text-left"><strong>Step 1 Please Choose Auto-transciprt method:</strong>
+        <label><input name="Paymethod" type="radio" value="Free" checked="true">Free    </label>
+        <label><input name="Paymethod" type="radio" value="State_of_Art">State of Art</label>
+    </form>
+
+    <form action="" id = "language" class="w-100 text-left"><strong>Step 2 Please Choose Video Language:</strong>
+        <label><input name="languageChoose" type="radio" value="English" checked="true">English</label>
+        <label><input name="languageChoose" type="radio" value="Chinese">中文</label>
+    </form>
+
+</body>
+
+
+</html>
